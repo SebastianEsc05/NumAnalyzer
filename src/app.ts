@@ -1,21 +1,27 @@
-export function esPrimo(n: number): boolean {
-    if(n <= 1) return false;
-    for(let i = 2; i <= Math.sqrt(n); i++){
-        if(n % i === 0) return false;
+export function esPrimo(num: number): boolean {
+    for (let i = 2; i * i <= num; i++) {
+        if (num % i === 0) return false;
     }
+
     return true;
 }
 
-export function divisores(n: number): number[] {
+export function divisores(num: number): number[] {
     const numDivisores: number[] = [];
-    for(let i = 1; i <= n; i++){
-        if(n % i === 0) numDivisores.push(i);
+    for(let i = 1; i <= num; i++){
+        if(num % i === 0) numDivisores.push(i);
     }
     return numDivisores;
 }
 
-export function raizYResiduo(n: number){
-    const raiz = Math.floor(Math.sqrt(n));
-    const residuo = n - raiz * raiz;
-    return {raiz,residuo};
+export function raizYResiduo(num: number): {raiz: number, residuo : number}{
+    let resta = num;
+    let raiz = 0;
+    let impar = 1;
+    while(resta >= impar){
+        resta -= impar;
+        raiz++;
+        impar += 2;
+    }
+    return {raiz, residuo: resta};
 }
