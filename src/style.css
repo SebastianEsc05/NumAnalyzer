@@ -11,13 +11,37 @@ input, button {
   padding: 0.5rem;
   font-size: 1.1rem;
 }
-button {
-  background: #2563eb;
+
+#Analizar {
+  background-color: #2563eb;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  margin: 1rem;
 }
+
+#Analizar:hover {
+  background-color: blue;
+}
+
+#Cancelar {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  margin: 1rem;
+}
+
+#Cancelar:hover {
+  background-color: darkred;
+}
+
 #resultado {
   margin-top: 1.5rem;
 }
