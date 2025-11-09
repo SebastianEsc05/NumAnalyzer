@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,9 +7,14 @@
   </head>
   <body>
     <h1>NumAnalyzer</h1>
-    <input id ="numero" type="number" placeholder="Ingresa un numero" />
+    <button id="Cancelar">Cancelar</button>
+    <input id="numero" type="number" placeholder="Ingresa un número entero" /> 
     <button id="Analizar">Analizar</button>
-    <div id="resultado"></div>
+    <div id="cargando" style="display: none; padding: 20px; text-align: center;">
+        <p>Calculando...</p>
+    </div>   
+    <div id="resultado">
+        </div> 
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

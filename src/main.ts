@@ -1,37 +1,63 @@
-import { esPrimo,divisores,raizYResiduo } from "./app";
+import { esPrimo, divisores, raizYResiduo, validarNumero } from "./app";
+import type { CancelToken } from "./app";
 
 const input = document.getElementById("numero") as HTMLInputElement;
 const btn = document.getElementById("Analizar") as HTMLButtonElement;
+const btnCancelar = document.getElementById("Cancelar") as HTMLButtonElement;
 const resultado = document.getElementById("resultado") as HTMLDivElement;
+const cargando = document.getElementById("cargando") as HTMLDivElement;
 
-btn.addEventListener("click", () => {
-  if(input.value == null){
-    resultado.innerHTML = "Tienes que ingresar un número primero"
-    return;
-  }
-  const numero = parseInt(input.value);
-  if(isNaN(numero)){
-    resultado.innerHTML = "Ingresa un número valido porfavor";
-    return;
-  }
-  if(numero < 0){
-    resultado.innerHTML = "El número no puede ser negativo";
-    return;
-  }
-  if(numero > 10000){
-    resultado.innerHTML = "Numero demasiado grande"
-    return;
-  }
-  const {raiz, residuo} = raizYResiduo(numero);
-  const primo = esPrimo(numero);
-  const divs = divisores(numero);
+let cancelToken: CancelToken = { cancelado: false };
 
-  resultado.innerHTML = `
-    <p><strong>Número:</strong> ${numero}</p>
-    <p><strong>Es primo:</strong> ${primo ? "Sí" : "No"}</p>
-    <p><strong>Raíz entera:</strong> ${raiz}</p>
-    <p><strong>Residuo:</strong> ${residuo}</p>
-    ${!primo ? `<p><strong>Divisores:</strong> ${divs.join(", ")}</p>` : ""}
-  `;
+btn.addEventListener("click", async () => {
+    cancelToken.cancelado = false;
+    const numeroString: string = input.value;
 
-})
+    if (!validarNumero(numeroString)) {
+        resultado.innerHTML = "Ingresa un número entero válido por favor.";
+        return;
+    }
+
+    const numeroBigInt: bigint = BigInt(numeroString);
+
+    if (numeroBigInt <= 0n) {
+        resultado.innerHTML = "El número no puede ser cero ni negativo";
+        return;
+    }
+
+    const limite = 100000000000n;
+    if (numeroBigInt > limite) {
+        resultado.innerHTML = `Número demasiado grande, el límite es ${limite.toString()}.`;
+        return;
+    }
+
+    cargando.style.display = "block";
+    resultado.innerHTML = "";
+
+    const { raiz, residuo } = raizYResiduo(numeroBigInt, cancelToken);
+    const primo = await esPrimo(numeroBigInt, cancelToken);
+
+    let divsHTML = "";
+    if (!primo) {
+        const divs = await divisores(numeroBigInt, cancelToken);
+        divsHTML = `<p><strong>Divisores:</strong> ${divs.join(", ")}</p>`;
+    }
+
+    if (!cancelToken.cancelado) {
+        resultado.innerHTML = `
+            <p><strong>Número:</strong> ${numeroBigInt.toString()}</p>
+            <p><strong>Es primo:</strong> ${primo ? "Sí" : "No"}</p>
+            <p><strong>Raíz entera:</strong> ${raiz.toString()}</p>
+            <p><strong>Residuo:</strong> ${residuo.toString()}</p>
+            ${divsHTML}
+        `;
+    } else {
+        resultado.innerHTML = "<p>Cálculo cancelado.</p>";
+    }
+
+    cargando.style.display = "none";
+});
+
+btnCancelar.addEventListener("click", () => {
+    cancelToken.cancelado = true;
+});
