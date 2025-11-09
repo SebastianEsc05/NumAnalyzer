@@ -1,27 +1,65 @@
-export function esPrimo(num: number): boolean {
-    for (let i = 2; i * i <= num; i++) {
-        if (num % i === 0) return false;
-    }
-
-    return true;
+export interface CancelToken {
+    cancelado: boolean;
 }
 
-export function divisores(num: number): number[] {
-    const numDivisores: number[] = [];
-    for(let i = 1; i <= num; i++){
-        if(num % i === 0) numDivisores.push(i);
-    }
-    return numDivisores;
+export async function esPrimo(num: bigint, token?: CancelToken): Promise<boolean> {
+    let i = 2n;
+    return new Promise((resolve) => {
+        const iterar = () => {
+            if (token?.cancelado) return resolve(false);
+            if (i * i > num) return resolve(true);
+            if (num % i === 0n) return resolve(false);
+
+            i++;
+            if (i % 1000n === 0n) {
+                setTimeout(iterar, 0);
+            } else {
+                iterar();
+            }
+        };
+        iterar();
+    });
 }
 
-export function raizYResiduo(num: number): {raiz: number, residuo : number}{
+export async function divisores(num: bigint, token?: CancelToken): Promise<bigint[]> {
+    const numDivisores: bigint[] = [];
+    let i = 1n;
+
+    return new Promise((resolve) => {
+        const iterar = () => {
+            if (token?.cancelado) return resolve(numDivisores);
+            if (i > num) return resolve(numDivisores);
+
+            if (num % i === 0n) numDivisores.push(i);
+            i++;
+            if (i % 1000n === 0n) setTimeout(iterar, 0);
+            else iterar();
+        };
+        iterar();
+    });
+}
+
+export function raizYResiduo(num: bigint, token?: CancelToken): { raiz: bigint; residuo: bigint } {
     let resta = num;
-    let raiz = 0;
-    let impar = 1;
-    while(resta >= impar){
+    let raiz = 0n;
+    let impar = 1n;
+
+    while (resta >= impar) {
+        if (token?.cancelado) break;
         resta -= impar;
         raiz++;
-        impar += 2;
+        impar += 2n;
     }
-    return {raiz, residuo: resta};
+
+    return { raiz, residuo: resta };
+}
+
+export function validarNumero(inputString: string): boolean {
+    if (inputString.trim() === "") return false;
+    try {
+        BigInt(inputString);
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
