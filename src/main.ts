@@ -41,7 +41,7 @@ btnAnalizar.addEventListener("click", async () => {
 
     let divsHTML = "";
     if (!primo) {
-        const divs = await divisores(numeroBigInt,cancelToken);
+        const divs = await divisores(numeroBigInt, raiz, cancelToken);
         divsHTML = `<p><strong>Divisores:</strong> ${divs.join(", ")}</p>`;
     }
 

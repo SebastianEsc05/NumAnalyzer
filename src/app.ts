@@ -21,14 +21,14 @@ export async function esPrimo(num: bigint, token?: CancelToken): Promise<boolean
     });
 }
 
-export async function divisores(num: bigint, token?: CancelToken): Promise<bigint[]> {
+export async function divisores(num: bigint, raiz: bigint, token?: CancelToken): Promise<bigint[]> {
     const numDivisores: bigint[] = [];
     let i = 1n;
 
     return new Promise((resolve) => {
         const iterar = () => {
             if (token?.cancelado) return resolve(numDivisores);
-            if (i > num) return resolve(numDivisores);
+            if (i > raiz) return resolve(numDivisores);
 
             if (num % i === 0n) numDivisores.push(i);
             i++;
