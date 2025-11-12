@@ -2,14 +2,17 @@ export interface CancelToken {
     cancelado: boolean;
 }
 
+
 export async function esPrimo(num: bigint, token?: CancelToken): Promise<boolean> {
+    if (num <= 1n) return Promise.resolve(false);
+
     let i = 2n;
     return new Promise((resolve) => {
         const iterar = () => {
             if (token?.cancelado) return resolve(false);
             if (i * i > num) return resolve(true);
             if (num % i === 0n) return resolve(false);
-
+            
             i++;
             if (i % 1000n === 0n) {
                 setTimeout(iterar, 0);
@@ -23,14 +26,19 @@ export async function esPrimo(num: bigint, token?: CancelToken): Promise<boolean
 
 export async function divisores(num: bigint, raiz: bigint, token?: CancelToken): Promise<bigint[]> {
     const numDivisores: bigint[] = [];
-    let i = 1n;
+        let i = 2n;
 
     return new Promise((resolve) => {
-        const iterar = () => {
+        const iterar = async () => { 
             if (token?.cancelado) return resolve(numDivisores);
             if (i > raiz) return resolve(numDivisores);
 
-            if (num % i === 0n) numDivisores.push(i);
+            if (num % i === 0n) {
+                if (await esPrimo(i, token)) {
+                    numDivisores.push(i);    
+                }
+                if (token?.cancelado) return resolve(numDivisores);
+            }                                            
             i++;
             if (i % 1000n === 0n) setTimeout(iterar, 0);
             else iterar();
@@ -38,6 +46,8 @@ export async function divisores(num: bigint, raiz: bigint, token?: CancelToken):
         iterar();
     });
 }
+
+
 
 export function raizYResiduo(num: bigint, token?: CancelToken): { raiz: bigint; residuo: bigint } {
     let resta = num;
