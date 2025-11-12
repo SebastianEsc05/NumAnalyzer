@@ -2,15 +2,17 @@ import { esPrimo, divisores, raizYResiduo, validarNumero } from "./app";
 import type { CancelToken } from "./app";
 
 const input = document.getElementById("numero") as HTMLInputElement;
-const btn = document.getElementById("Analizar") as HTMLButtonElement;
-const btnCancelar = document.getElementById("Cancelar") as HTMLButtonElement;
+const btnAnalizar = document.getElementById("analizar") as HTMLButtonElement;
+const btnCancelar = document.getElementById("cancelar") as HTMLButtonElement;
 const resultado = document.getElementById("resultado") as HTMLDivElement;
 const cargando = document.getElementById("cargando") as HTMLDivElement;
+const cancelado = document.getElementById("cancelado") as HTMLDivElement;
 
 let cancelToken: CancelToken = { cancelado: false };
 
-btn.addEventListener("click", async () => {
+btnAnalizar.addEventListener("click", async () => {
     cancelToken.cancelado = false;
+    cancelado.style.display = "none";
     const numeroString: string = input.value;
 
     if (!validarNumero(numeroString)) {
@@ -52,7 +54,7 @@ btn.addEventListener("click", async () => {
             ${divsHTML}
         `;
     } else {
-        resultado.innerHTML = "<p>Cálculo cancelado.</p>";
+        cancelado.style.display = "block";
     }
 
     cargando.style.display = "none";
