@@ -6,13 +6,13 @@ const btnAnalizar = document.getElementById("analizar") as HTMLButtonElement;
 const btnCancelar = document.getElementById("cancelar") as HTMLButtonElement;
 const resultado = document.getElementById("resultado") as HTMLDivElement;
 const cargando = document.getElementById("cargando") as HTMLDivElement;
-const cancelado = document.getElementById("cancelado") as HTMLDivElement;
 
 let cancelToken: CancelToken = { cancelado: false };
+let activo: CancelToken = { cancelado: false };
 
 btnAnalizar.addEventListener("click", async () => {
     cancelToken.cancelado = false;
-    cancelado.style.display = "none";
+    activo.cancelado = true;
     const numeroString: string = input.value;
 
     if (!validarNumero(numeroString)) {
@@ -32,7 +32,7 @@ btnAnalizar.addEventListener("click", async () => {
         resultado.innerHTML = `Número demasiado grande, el límite es ${limite.toString()}.`;
         return;
     }
-
+    cargando.innerHTML = `<p>Calculando...</p>`;
     cargando.style.display = "block";
     resultado.innerHTML = "";
 
@@ -53,13 +53,18 @@ btnAnalizar.addEventListener("click", async () => {
             <p><strong>Residuo:</strong> ${residuo.toString()}</p>
             ${divsHTML}
         `;
+        cargando.style.display = "none";
     } else {
-        cancelado.style.display = "block";
+        cargando.innerHTML = `<p>Cálculo cancelado.</p>`;
+        cargando.style.display = "block";
     }
-
-    cargando.style.display = "none";
+    activo.cancelado = false;
 });
 
 btnCancelar.addEventListener("click", () => {
-    cancelToken.cancelado = true;
+    if (activo.cancelado == true) {
+        cancelToken.cancelado = true;
+    }
+    resultado.innerHTML = ``;
+    input.value = "";
 });

@@ -99,16 +99,6 @@ button {
   margin-top: 12px;
 }
 
-.cancelado {
-  display: none;
-  margin: auto;
-  width: 80%;
-  padding: 10px;
-  text-align: center;
-  font-size: 20px;
-  margin-top: 12px;
-}
-
 input[type=number] {
   -moz-appearance: textfield;
   appearance: none;
